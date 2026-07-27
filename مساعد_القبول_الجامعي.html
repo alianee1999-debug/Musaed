@@ -1,0 +1,1309 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مساعد القبول الجامعي العراقي</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap');
+
+  :root{
+    --ink: #142A45;
+    --ink-2: #1E3B5C;
+    --paper: #F6F1E6;
+    --paper-card: #FFFDF7;
+    --line: #DDD2B4;
+    --gold: #A8792F;
+    --gold-light: #EEDFB8;
+    --green: #1E6E56;
+    --green-bg: #E1EFE6;
+    --amber: #9C6B1F;
+    --amber-bg: #F4E9CE;
+    --red: #9C3B31;
+    --red-bg: #F3E1DC;
+    --ink-soft: #5B6B7F;
+    --radius: 10px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'IBM Plex Sans Arabic', sans-serif;
+    background:
+      radial-gradient(circle at 10% 0%, rgba(168,121,47,0.06), transparent 40%),
+      repeating-linear-gradient(0deg, rgba(20,42,69,0.025) 0px, rgba(20,42,69,0.025) 1px, transparent 1px, transparent 34px),
+      var(--paper);
+    min-height: 100vh;
+    padding: 24px 16px;
+    color: var(--ink);
+  }
+
+  .container {
+    max-width: 780px;
+    margin: 0 auto;
+    background: var(--paper-card);
+    border-radius: 18px;
+    border: 1px solid var(--line);
+    box-shadow: 0 30px 60px -30px rgba(20,42,69,0.35);
+    overflow: hidden;
+  }
+
+  /* ===== Header ===== */
+  .header-bar {
+    position: relative;
+    background: linear-gradient(160deg, var(--ink) 0%, var(--ink-2) 100%);
+    color: #fff;
+    padding: 34px 30px 30px;
+    text-align: center;
+    overflow: hidden;
+  }
+  .header-bar::before{
+    content:"";
+    position:absolute; inset:0;
+    background-image: radial-gradient(rgba(255,255,255,0.07) 1px, transparent 1px);
+    background-size: 14px 14px;
+    opacity:.5;
+  }
+  .header-seal{
+    position:absolute;
+    left: -18px; top: -18px;
+    width: 96px; height: 96px;
+    opacity: 0.16;
+  }
+  .header-inner{ position: relative; }
+  .eyebrow{
+    font-size: 12px;
+    letter-spacing: .5px;
+    color: var(--gold-light);
+    font-weight: 600;
+    margin-bottom: 10px;
+    display:inline-flex; align-items:center; gap:8px;
+  }
+  .eyebrow::before, .eyebrow::after{ content:""; width:20px; height:1px; background: var(--gold-light); opacity:.6; }
+  .header-bar h1 {
+    font-family: 'Amiri', serif;
+    font-size: 30px; font-weight: 700; margin-bottom: 10px;
+    line-height: 1.3;
+  }
+  .header-bar p { font-size: 14.5px; opacity: 0.85; max-width: 480px; margin: 0 auto; }
+
+  .content { padding: 28px 26px 32px; }
+
+  /* ===== Progress ===== */
+  .progress-track{
+    height: 4px;
+    background: var(--line);
+    border-radius: 4px;
+    margin-bottom: 22px;
+    overflow: hidden;
+  }
+  .progress-fill{
+    height: 100%;
+    background: linear-gradient(90deg, var(--gold), var(--ink-2));
+    border-radius: 4px;
+    transition: width .4s ease;
+    width: 0%;
+  }
+
+  .step-indicator {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 28px;
+    position: relative;
+  }
+  .step-indicator::before{
+    content:"";
+    position:absolute; top:18px; right: 18px; left: 18px;
+    height: 1px; background: var(--line); z-index:0;
+  }
+  .step-dot-wrap{ display:flex; flex-direction:column; align-items:center; gap:6px; position:relative; z-index:1; }
+  .step-dot {
+    width: 37px; height: 37px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Amiri', serif;
+    font-size: 16px; font-weight: 700;
+    background: var(--paper-card);
+    color: var(--ink-soft);
+    border: 2px solid var(--line);
+    transition: all 0.25s ease;
+  }
+  .step-dot.active { background: var(--gold); color: #fff; border-color: var(--gold); box-shadow: 0 0 0 4px var(--gold-light); }
+  .step-dot.done { background: var(--ink-2); color: #fff; border-color: var(--ink-2); font-size: 15px; }
+  .step-name{ font-size: 10.5px; color: var(--ink-soft); font-weight: 500; display:none; }
+  @media (min-width: 560px){ .step-name{ display:block; } }
+
+  /* ===== Cards ===== */
+  .card {
+    background: var(--paper-card);
+    border: 1px solid var(--line);
+    border-top: 3px solid var(--gold);
+    border-radius: var(--radius);
+    padding: 24px;
+    margin-bottom: 20px;
+  }
+  .card-title {
+    font-family: 'Amiri', serif;
+    font-size: 21px; font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 20px;
+    display: flex; align-items: baseline; gap: 10px;
+    flex-wrap: wrap;
+  }
+  .card-title .kicker{
+    font-family: 'IBM Plex Sans Arabic', sans-serif;
+    font-size: 11.5px; font-weight: 600; color: var(--gold);
+    background: var(--gold-light);
+    padding: 3px 10px; border-radius: 20px;
+  }
+
+  .form-group { margin-bottom: 18px; }
+  .form-label {
+    display: block;
+    font-size: 13.5px; font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 8px;
+  }
+  .form-label .required { color: var(--red); }
+  .form-input, .form-select {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1.5px solid var(--line);
+    border-radius: 8px;
+    font-size: 15px;
+    background: #fff;
+    color: var(--ink);
+    transition: all 0.15s;
+    font-family: 'IBM Plex Sans Arabic', sans-serif;
+  }
+  .form-input:focus, .form-select:focus, button:focus-visible, .filter-chip:focus-visible {
+    outline: none;
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px var(--gold-light);
+  }
+  .form-input::placeholder { color: #9aa3ae; }
+
+  .btn {
+    padding: 12px 26px;
+    border-radius: 8px;
+    font-size: 14.5px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all 0.18s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'IBM Plex Sans Arabic', sans-serif;
+  }
+  .btn-primary { background: var(--ink-2); color: #fff; }
+  .btn-primary:hover { background: var(--ink); transform: translateY(-1px); box-shadow: 0 10px 20px -8px rgba(20,42,69,0.5); }
+  .btn-outline { background: #fff; color: var(--ink-2); border: 1.5px solid var(--line); }
+  .btn-outline:hover { background: var(--paper); border-color: var(--ink-2); }
+  .btn-outline:disabled { opacity:.4; cursor:not-allowed; }
+  .btn-danger { background: var(--red); color: #fff; }
+  .btn-success { background: var(--green); color: #fff; }
+  .btn-success:hover{ filter: brightness(1.08); }
+  .btn-sm { padding: 10px 18px; font-size: 13px; }
+
+  .actions { display: flex; gap: 12px; justify-content: space-between; margin-top: 24px; }
+
+  /* ===== Stats (ledger tiles) ===== */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .stat-box {
+    text-align: center;
+    padding: 18px 10px 16px;
+    border: 1px solid var(--line);
+    border-top: 2px solid var(--gold);
+    border-radius: 8px;
+    background: #fff;
+  }
+  .stat-box .stat-num { font-family:'Amiri',serif; font-size: 30px; font-weight: 700; color: var(--ink); }
+  .stat-box .stat-label { font-size: 12.5px; color: var(--ink-soft); margin-top: 4px; }
+
+  .warning-box {
+    background: var(--red-bg);
+    border: 1px solid #dcb6ab;
+    border-right: 4px solid var(--red);
+    border-radius: 8px;
+    padding: 14px 16px;
+    margin-bottom: 20px;
+    font-size: 13.5px;
+    color: #6f2a22;
+    line-height: 1.7;
+  }
+  .warning-box strong { color: var(--red); }
+
+  .ai-box {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-right: 4px solid var(--gold);
+    border-radius: 8px;
+    padding: 14px 16px;
+    margin-bottom: 20px;
+    font-size: 13.5px;
+    color: var(--ink);
+    line-height: 1.7;
+  }
+  .ai-box .ai-label {
+    font-family: 'Amiri', serif;
+    font-style: italic;
+    font-size: 14px; font-weight: 700;
+    color: var(--gold);
+    margin-bottom: 6px;
+    display: flex; align-items: center; gap: 8px;
+  }
+
+  .filter-bar { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+  .filter-chip {
+    padding: 6px 15px; border-radius: 20px; font-size: 12.5px; font-weight: 600;
+    border: 1.5px solid var(--line); background: #fff; cursor: pointer; color: var(--ink-soft);
+    transition: all 0.15s; font-family: 'IBM Plex Sans Arabic', sans-serif;
+  }
+  .filter-chip:hover { border-color: var(--ink-2); color: var(--ink-2); }
+  .filter-chip.active { background: var(--ink-2); color: #fff; border-color: var(--ink-2); }
+
+  /* ===== Suggestion rows ===== */
+  .choice-list { display: flex; flex-direction: column; gap: 8px; }
+  .sugg-item, .choice-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 13px 15px; border: 1.5px solid var(--line); border-radius: 8px;
+    background: #fff; margin-bottom: 8px; flex-wrap: wrap; transition: opacity .2s, border-color .2s;
+  }
+  .sugg-item.rejected{ opacity:.55; background:#faf8f2; }
+  .sugg-item.rejected .name{ text-decoration: line-through; }
+  .choice-rank {
+    width: 34px; height: 34px; border-radius: 50%; background: var(--ink-2); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Amiri', serif; font-size: 15px; font-weight: 700; flex-shrink: 0;
+    border: 2px dashed rgba(255,255,255,0.4);
+  }
+  .sugg-item.rejected .choice-rank{ background: #a8a397; }
+  .choice-details { flex: 1; min-width: 150px; }
+  .choice-details .name { font-size: 14.5px; font-weight: 600; color: var(--ink); }
+  .choice-details .meta { font-size: 11.5px; color: var(--ink-soft); margin-top: 4px; line-height:1.6; }
+  .choice-actions, .sugg-controls { display: flex; gap: 6px; align-items: center; margin-inline-start: auto; }
+  .choice-actions button, .sugg-controls button {
+    width: 30px; height: 30px; border-radius: 6px; border: 1.5px solid var(--line); background: #fff;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    font-size: 14.5px; color: var(--ink-soft); transition: all 0.15s;
+  }
+  .choice-actions button:hover, .sugg-controls button:hover { background: var(--paper); color: var(--ink-2); border-color: var(--ink-2); }
+  .choice-actions button:disabled, .sugg-controls button:disabled { opacity: 0.3; cursor: not-allowed; }
+
+  .switch{ position:relative; display:inline-block; width:38px; height:22px; flex-shrink:0; }
+  .switch input{ opacity:0; width:0; height:0; position:absolute; }
+  .switch .slider{ position:absolute; inset:0; cursor:pointer; background:#d8cfa8; transition:.2s; border-radius:22px; }
+  .switch .slider::before{ content:""; position:absolute; height:16px; width:16px; right:3px; bottom:3px; background:#fff; transition:.2s; border-radius:50%; box-shadow:0 1px 2px rgba(0,0,0,.3); }
+  .switch input:checked + .slider{ background: var(--green); }
+  .switch input:checked + .slider::before{ transform: translateX(-16px); }
+  .switch input:focus-visible + .slider{ box-shadow: 0 0 0 3px var(--gold-light); }
+
+  .badge {
+    display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 11.5px; font-weight: 600;
+  }
+  .badge-success { background: var(--green-bg); color: var(--green); }
+  .badge-warning { background: var(--amber-bg); color: var(--amber); }
+  .badge-danger { background: var(--red-bg); color: var(--red); }
+  .badge-muted { background: #ece7da; color: #8a8272; }
+  .advice-line{
+    flex-basis: 100%; margin-top: 8px; padding: 8px 10px;
+    background: #FBF6E9; border-right: 3px solid var(--gold); border-radius: 6px;
+    font-size: 12px; color: #6b5a2e; line-height: 1.7;
+  }
+
+  .manual-add{ margin-top: 18px; padding-top: 18px; border-top: 1px dashed var(--line); }
+  .manual-add-label{ font-size: 13.5px; font-weight: 600; color: var(--ink); margin-bottom: 10px; display:flex; align-items:center; gap:8px; }
+  .manual-add-row{ display: flex; gap: 8px; flex-wrap: wrap; }
+  .manual-add-row select{ flex: 1; min-width: 200px; }
+
+  .summary-box {
+    position: relative; background: var(--paper); border: 1px solid var(--line);
+    border-radius: 10px; padding: 22px; margin-bottom: 20px; overflow: hidden;
+  }
+  .summary-seal{ position: absolute; left: -10px; bottom: -20px; width: 130px; height: 130px; opacity: 0.1; transform: rotate(-9deg); pointer-events: none; }
+  .summary-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px dashed var(--line); font-size: 14.5px; }
+  .summary-row:last-child { border-bottom: none; }
+  .summary-row .label { color: var(--ink-soft); }
+  .summary-row .value { font-weight: 700; color: var(--ink); font-family:'Amiri',serif; font-size:16px; }
+
+  .empty-state { text-align: center; padding: 46px 20px; color: var(--ink-soft); }
+  .empty-state .icon { font-size: 40px; margin-bottom: 14px; opacity:.7; }
+  .empty-state p { font-size: 14.5px; }
+
+  .toast {
+    position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(10px);
+    background: var(--ink); color: #fff; padding: 13px 26px; border-radius: 10px;
+    font-size: 13.5px; font-weight: 600; z-index: 1000; opacity: 0; transition: all 0.3s;
+    pointer-events: none; box-shadow: 0 15px 30px rgba(0,0,0,0.25); border: 1px solid var(--gold);
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  .export-buttons { display: flex; gap: 10px; flex-wrap: wrap; }
+  .hidden { display: none !important; }
+  .step { animation: fadeIn .35s ease; }
+  @keyframes fadeIn { from { opacity:0; transform: translateY(6px); } to { opacity:1; transform: translateY(0); } }
+  @media (prefers-reduced-motion: reduce){ .step{ animation:none; } }
+
+  @media (max-width: 600px) {
+    .stat-box .stat-num { font-size: 24px; }
+    .content { padding: 20px; }
+    .header-bar h1 { font-size: 23px; }
+    .header-bar{ padding: 28px 20px 24px; }
+    .sugg-controls{ margin-inline-start: 0; width: 100%; justify-content: flex-end; }
+  }
+</style>
+<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore-compat.js"></script>
+</head>
+<body>
+
+<div class="container">
+  <div class="header-bar">
+    <svg class="header-seal" viewBox="0 0 100 100"><circle cx="50" cy="50" r="46" fill="none" stroke="#fff" stroke-width="1.5"/><circle cx="50" cy="50" r="38" fill="none" stroke="#fff" stroke-width="1" stroke-dasharray="3 3"/></svg>
+    <div class="header-inner">
+      <span class="eyebrow">التنسيق المركزي للقبول</span>
+      <h1>مساعد القبول الجامعي العراقي</h1>
+      <p>الذكاء الاصطناعي يرتّب لك استمارة الجامعات والأقسام تلقائياً حسب معدلك — وأنت الذي يقرر القبول أو الرفض</p>
+      <div style="margin-top:14px;">
+        <a href="#" onclick="showBoard(); return false;" style="color:#EEDFB8; font-size:13px; text-decoration:underline;">🌐 عرض لوحة الطلاب المنشورة</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- الخطوة 0: الترحيب -->
+    <div id="step-welcome" class="step">
+      <div class="stats-grid">
+        <div class="stat-box"><div class="stat-num">40+</div><div class="stat-label">جامعة</div></div>
+        <div class="stat-box"><div class="stat-num">200+</div><div class="stat-label">قسم</div></div>
+        <div class="stat-box"><div class="stat-num">10</div><div class="stat-label">خيارات</div></div>
+      </div>
+      <div class="ai-box">
+        <div class="ai-label">كيف يعمل التطبيق</div>
+        <span>أدخل بياناتك مرة واحدة، وسيقوم الذكاء الاصطناعي بترتيب استمارة قبول مقترحة من 10 خيارات حسب احتمالية قبولك الفعلية بناءً على معدلك — الأقرب لمعدلك أولاً. أنت حر بالكامل في قبول كل خيار أو رفضه أو استبداله قبل التصدير النهائي.</span>
+      </div>
+      <div class="warning-box">
+        <strong>تنبيه مهم:</strong> بيانات الجامعات والأقسام والحدود الدنيا في هذا التطبيق <strong>تقريبية وثابتة</strong> (لقطة وقت إعداد التطبيق) وليست متصلة بأي مصدر حي. لا تعكس بالضرورة الأقسام المستحدثة حديثاً أو تعديلات الحدود الدنيا لهذه السنة. لا تعتمد عليها للقرار النهائي — تأكد من كل رقم عبر البوابة الرسمية لوزارة التعليم العالي (منصة قدم) قبل تعبئة استمارتك الفعلية.
+      </div>
+      <div style="text-align: center; margin-top: 24px;">
+        <button class="btn btn-primary" onclick="goToStep(1)">ابدأ الآن</button>
+      </div>
+    </div>
+
+    <!-- الخطوة 1: بيانات الطالب -->
+    <div id="step-1" class="step hidden">
+      <div class="progress-track"><div class="progress-fill" id="progressFill1"></div></div>
+      <div class="step-indicator">
+        <div class="step-dot-wrap"><div class="step-dot active">١</div><span class="step-name">البيانات</span></div>
+        <div class="step-dot-wrap"><div class="step-dot">٢</div><span class="step-name">اقتراح الذكاء الاصطناعي</span></div>
+        <div class="step-dot-wrap"><div class="step-dot">٣</div><span class="step-name">المراجعة والتصدير</span></div>
+      </div>
+      <div class="card">
+        <div class="card-title">بيانات الطالب <span class="kicker">١ من ٣</span></div>
+        <div class="form-group">
+          <label class="form-label">الاسم الكامل <span class="required">*</span></label>
+          <input type="text" class="form-input" id="studentName" placeholder="أدخل اسمك الثلاثي">
+        </div>
+        <div class="form-group">
+          <label class="form-label">المعدل (من 100) <span class="required">*</span></label>
+          <input type="number" class="form-input" id="studentGPA" placeholder="مثال: 85.50" min="0" max="100" step="0.01">
+        </div>
+        <div class="form-group">
+          <label class="form-label">الفرع <span class="required">*</span></label>
+          <select class="form-select" id="studentBranch">
+            <option value="">اختر الفرع</option>
+            <option value="علمي">الفرع العلمي</option>
+            <option value="أدبي">الفرع الأدبي</option>
+            <option value="تطبيقي">الفرع التطبيقي</option>
+            <option value="تجاري">الفرع التجاري</option>
+            <option value="صناعي">الفرع الصناعي</option>
+            <option value="زراعي">الفرع الزراعي</option>
+            <option value="فنون">الفرع الفني (فنون)</option>
+            <option value="رياضي">الفرع الرياضي</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">القناة</label>
+          <select class="form-select" id="studentChannel">
+            <option value="عامة">القناة العامة</option>
+            <option value="شهداء">قناة ذوي الشهداء</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">المحافظة المفضلة</label>
+          <select class="form-select" id="preferredProvince">
+            <option value="">الكل</option>
+            <option value="بغداد">بغداد</option>
+            <option value="البصرة">البصرة</option>
+            <option value="الموصل">الموصل</option>
+            <option value="أربيل">أربيل</option>
+            <option value="النجف">النجف</option>
+            <option value="كربلاء">كربلاء</option>
+            <option value="الأنبار">الأنبار</option>
+            <option value="بابل">بابل</option>
+            <option value="ديالى">ديالى</option>
+            <option value="كركوك">كركوك</option>
+            <option value="صلاح الدين">صلاح الدين</option>
+            <option value="واسط">واسط</option>
+            <option value="ميسان">ميسان</option>
+            <option value="ذي قار">ذي قار</option>
+            <option value="القادسية">القادسية</option>
+            <option value="السليمانية">السليمانية</option>
+            <option value="دهوك">دهوك</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">الحد الأقصى لعدد الرغبات في الاستمارة</label>
+          <input type="number" class="form-input" id="maxChoicesInput" value="10" min="1" max="50" step="1">
+          <div style="font-size:12px; color:var(--ink-soft); margin-top:6px; line-height:1.6;">هذا الرقم يتغيّر كل عام حسب تعليمات الوزارة الرسمية — تأكد منه عبر منصة قدم وعدّله هنا إذا اختلف.</div>
+        </div>
+        <div class="actions">
+          <button class="btn btn-outline" onclick="goToStep(0)">رجوع</button>
+          <button class="btn btn-primary" onclick="validateStep1()">رتّب الاستمارة بالذكاء الاصطناعي</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- الخطوة 2: اقتراح الذكاء الاصطناعي -->
+    <div id="step-2" class="step hidden">
+      <div class="progress-track"><div class="progress-fill" id="progressFill2"></div></div>
+      <div class="step-indicator">
+        <div class="step-dot-wrap"><div class="step-dot done">✓</div><span class="step-name">البيانات</span></div>
+        <div class="step-dot-wrap"><div class="step-dot active">٢</div><span class="step-name">اقتراح الذكاء الاصطناعي</span></div>
+        <div class="step-dot-wrap"><div class="step-dot">٣</div><span class="step-name">المراجعة والتصدير</span></div>
+      </div>
+      <div class="card">
+        <div class="card-title">الاستمارة المقترحة من الذكاء الاصطناعي <span class="kicker">٢ من ٣</span></div>
+        <div class="ai-box">
+          <div class="ai-label">منطق الترتيب</div>
+          <span id="aiSortText">جارٍ إعداد الاقتراح...</span>
+        </div>
+        <div class="warning-box" style="margin-bottom:16px;">
+          <strong>تذكير:</strong> القائمة أدناه مبنية على بيانات تقريبية وثابتة قد لا تشمل أقساماً أو جامعات مستحدثة حديثاً، أو قد تختلف عن الحدود الدنيا الفعلية لهذه السنة. راجع كل خيار عبر منصة قدم قبل اعتماده نهائياً. كذلك نصائح التوظيف (💡) عامة وإرشادية وقد تختلف حسب الجهة والسنة.
+        </div>
+        <div class="choice-list" id="suggList"></div>
+        <div class="manual-add">
+          <div class="manual-add-label">إضافة قسم يدوياً إلى القائمة</div>
+          <div class="manual-add-row">
+            <select class="form-select" id="manualAddSelect"></select>
+            <button class="btn btn-outline btn-sm" id="manualAddBtn" onclick="manualAdd()">+ إضافة</button>
+          </div>
+        </div>
+        <div class="actions">
+          <button class="btn btn-outline" onclick="goToStep(1)">رجوع</button>
+          <button class="btn btn-primary" onclick="goToStep(3)">التالي</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- الخطوة 3: المراجعة والتصدير -->
+    <div id="step-3" class="step hidden">
+      <div class="progress-track"><div class="progress-fill" id="progressFill3"></div></div>
+      <div class="step-indicator">
+        <div class="step-dot-wrap"><div class="step-dot done">✓</div><span class="step-name">البيانات</span></div>
+        <div class="step-dot-wrap"><div class="step-dot done">✓</div><span class="step-name">اقتراح الذكاء الاصطناعي</span></div>
+        <div class="step-dot-wrap"><div class="step-dot active">٣</div><span class="step-name">المراجعة والتصدير</span></div>
+      </div>
+      <div class="card">
+        <div class="card-title">مراجعة استمارة القبول <span class="kicker">٣ من ٣</span></div>
+        <div class="summary-box" id="summaryBox">
+          <svg class="summary-seal" viewBox="0 0 100 100"><circle cx="50" cy="50" r="46" fill="none" stroke="#142A45" stroke-width="2"/><circle cx="50" cy="50" r="38" fill="none" stroke="#142A45" stroke-width="1" stroke-dasharray="2 3"/></svg>
+        </div>
+        <div class="warning-box">
+          <strong>قبل التقديم:</strong> هذه استمارة مساعدة غير رسمية ببيانات تقريبية وثابتة. تأكد من كل جامعة وقسم وحد أدنى عبر منصة قدم الرسمية قبل تعبئة الاستمارة الفعلية، لأن الأقسام المستحدثة أو تعديلات الحدود الدنيا لهذه السنة قد لا تكون مدرجة هنا.
+        </div>
+        <div class="card-title" style="margin-top: 24px;">الخيارات النهائية (المقبولة فقط)</div>
+        <div class="choice-list" id="finalChoiceList"></div>
+        <div class="export-buttons" style="margin-top: 24px;">
+          <button class="btn btn-primary" onclick="exportToPDF()">تصدير PDF</button>
+          <button class="btn btn-outline" onclick="exportToText()">نسخ نصي</button>
+          <button class="btn btn-outline" onclick="shareViaWhatsapp()">📤 أرسل القائمة لصديق</button>
+          <button class="btn btn-outline" onclick="publishToBoard()">🌐 انشر قائمتي بلوحة الطلاب</button>
+          <button class="btn btn-success" onclick="window.open('https://ur.gov.iq/','_blank')">التقديم على منصة قدم</button>
+        </div>
+        <div class="actions">
+          <button class="btn btn-outline" onclick="goToStep(2)">رجوع وتعديل الاقتراح</button>
+          <button class="btn btn-outline" onclick="resetApp()">بدء جديد</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- لوحة الطلاب العامة -->
+    <div id="step-board" class="step hidden">
+      <div class="card">
+        <div class="card-title" style="justify-content: space-between;">
+          <span>🌐 لوحة الطلاب المنشورة</span>
+          <button class="btn btn-outline btn-sm" onclick="closeBoard()">إغلاق</button>
+        </div>
+        <div class="ai-box">
+          <div class="ai-label">ملاحظة</div>
+          <span>هذه لوحة عامة يشوفها أي زائر — تعرض قائمة الاختيارات (الجامعة والقسم) وتعليقات عامة قصيرة (٣٠٠ حرف كحد أقصى). <strong>كل شيء هنا عام وظاهر للجميع، ما فيه رسائل خاصة بين طالبين.</strong> الاسم اختياري تماماً، والمدير يقدر يحذف أي قائمة أو تعليق.</span>
+        </div>
+        <div id="adminBox" style="margin-bottom:16px; display:flex; align-items:center; gap:8px; flex-wrap:wrap;"></div>
+        <div id="boardList"></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  // ====== بيانات الجامعات ======
+  const universities = [
+    { id: 'ubaghdad', name: 'جامعة بغداد', city: 'بغداد' },
+    { id: 'umustansiriya', name: 'الجامعة المستنصرية', city: 'بغداد' },
+    { id: 'utechnology', name: 'الجامعة التكنولوجية', city: 'بغداد' },
+    { id: 'ualiraqia', name: 'الجامعة العراقية', city: 'بغداد' },
+    { id: 'uwasit', name: 'جامعة واسط', city: 'واسط' },
+    { id: 'ukufa', name: 'جامعة الكوفة', city: 'النجف' },
+    { id: 'unajaf', name: 'جامعة النجف', city: 'النجف' },
+    { id: 'ukarbala', name: 'جامعة كربلاء', city: 'كربلاء' },
+    { id: 'ubasrah', name: 'جامعة البصرة', city: 'البصرة' },
+    { id: 'umosul', name: 'جامعة الموصل', city: 'الموصل' },
+    { id: 'usalah', name: 'جامعة صلاح الدين', city: 'أربيل' },
+    { id: 'udiyala', name: 'جامعة ديالى', city: 'ديالى' },
+    { id: 'uanbar', name: 'جامعة الأنبار', city: 'الأنبار' },
+    { id: 'ubabil', name: 'جامعة بابل', city: 'بابل' },
+    { id: 'ukirkuk', name: 'جامعة كركوك', city: 'كركوك' },
+    { id: 'uduhok', name: 'جامعة دهوك', city: 'دهوك' },
+    { id: 'usulaymaniya', name: 'جامعة السليمانية', city: 'السليمانية' },
+    { id: 'udhiqar', name: 'جامعة ذي قار', city: 'ذي قار' },
+    { id: 'uqadisiya', name: 'جامعة القادسية', city: 'القادسية' },
+    { id: 'umaysan', name: 'جامعة ميسان', city: 'ميسان' },
+    { id: 'uanbar_tech', name: 'الجامعة التقنية الوسطى', city: 'بغداد' },
+    { id: 'usouth_tech', name: 'الجامعة التقنية الجنوبية', city: 'البصرة' },
+    { id: 'unorth_tech', name: 'الجامعة التقنية الشمالية', city: 'الموصل' },
+    { id: 'ukufa_tech', name: 'الجامعة التقنية الكوفة', city: 'النجف' },
+  ];
+
+  // ====== بيانات الأقسام ======
+  const departments = [
+    { id: 'med_ubaghdad', name: 'طب بشري', uni: 'ubaghdad', minGPA: 95, branch: 'علمي' },
+    { id: 'dent_ubaghdad', name: 'طب الأسنان', uni: 'ubaghdad', minGPA: 93, branch: 'علمي' },
+    { id: 'pharm_ubaghdad', name: 'الصيدلة', uni: 'ubaghdad', minGPA: 90, branch: 'علمي' },
+    { id: 'eng_ubaghdad', name: 'الهندسة', uni: 'ubaghdad', minGPA: 85, branch: 'علمي' },
+    { id: 'sci_ubaghdad', name: 'العلوم', uni: 'ubaghdad', minGPA: 75, branch: 'علمي' },
+    { id: 'law_ubaghdad', name: 'القانون', uni: 'ubaghdad', minGPA: 80, branch: 'أدبي' },
+    { id: 'arts_ubaghdad', name: 'الآداب', uni: 'ubaghdad', minGPA: 70, branch: 'أدبي' },
+    { id: 'educ_ubaghdad', name: 'التربية', uni: 'ubaghdad', minGPA: 68, branch: 'أدبي' },
+    { id: 'admin_ubaghdad', name: 'الإدارة والاقتصاد', uni: 'ubaghdad', minGPA: 72, branch: 'أدبي' },
+    { id: 'vet_ubaghdad', name: 'الطب البيطري', uni: 'ubaghdad', minGPA: 82, branch: 'علمي' },
+    { id: 'agri_ubaghdad', name: 'الزراعة', uni: 'ubaghdad', minGPA: 65, branch: 'علمي' },
+    { id: 'fine_ubaghdad', name: 'الفنون الجميلة', uni: 'ubaghdad', minGPA: 60, branch: 'فنون' },
+    { id: 'phys_ubaghdad', name: 'التربية البدنية وعلوم الرياضة', uni: 'ubaghdad', minGPA: 60, branch: 'رياضي' },
+    { id: 'ai_ubaghdad', name: 'الذكاء الاصطناعي', uni: 'ubaghdad', minGPA: 88, branch: 'علمي' },
+
+    { id: 'med_umustansiriya', name: 'طب بشري', uni: 'umustansiriya', minGPA: 94, branch: 'علمي' },
+    { id: 'dent_umustansiriya', name: 'طب الأسنان', uni: 'umustansiriya', minGPA: 92, branch: 'علمي' },
+    { id: 'pharm_umustansiriya', name: 'الصيدلة', uni: 'umustansiriya', minGPA: 89, branch: 'علمي' },
+    { id: 'eng_umustansiriya', name: 'الهندسة', uni: 'umustansiriya', minGPA: 84, branch: 'علمي' },
+    { id: 'sci_umustansiriya', name: 'العلوم', uni: 'umustansiriya', minGPA: 74, branch: 'علمي' },
+    { id: 'educ_umustansiriya', name: 'التربية', uni: 'umustansiriya', minGPA: 67, branch: 'أدبي' },
+
+    { id: 'eng_utechnology', name: 'الهندسة', uni: 'utechnology', minGPA: 86, branch: 'علمي' },
+    { id: 'cs_utechnology', name: 'علوم الحاسبات', uni: 'utechnology', minGPA: 83, branch: 'علمي' },
+    { id: 'app_sci_utechnology', name: 'العلوم التطبيقية', uni: 'utechnology', minGPA: 78, branch: 'علمي' },
+    { id: 'med_tech_utechnology', name: 'الهندسة الطبية', uni: 'utechnology', minGPA: 85, branch: 'علمي' },
+
+    { id: 'med_ualiraqia', name: 'طب بشري', uni: 'ualiraqia', minGPA: 93, branch: 'علمي' },
+    { id: 'dent_ualiraqia', name: 'طب الأسنان', uni: 'ualiraqia', minGPA: 91, branch: 'علمي' },
+    { id: 'pharm_ualiraqia', name: 'الصيدلة', uni: 'ualiraqia', minGPA: 88, branch: 'علمي' },
+    { id: 'eng_ualiraqia', name: 'الهندسة', uni: 'ualiraqia', minGPA: 83, branch: 'علمي' },
+    { id: 'law_ualiraqia', name: 'القانون', uni: 'ualiraqia', minGPA: 78, branch: 'أدبي' },
+    { id: 'admin_ualiraqia', name: 'الإدارة والاقتصاد', uni: 'ualiraqia', minGPA: 70, branch: 'أدبي' },
+
+    { id: 'med_uwasit', name: 'طب بشري', uni: 'uwasit', minGPA: 90, branch: 'علمي' },
+    { id: 'dent_uwasit', name: 'طب الأسنان', uni: 'uwasit', minGPA: 88, branch: 'علمي' },
+    { id: 'pharm_uwasit', name: 'الصيدلة', uni: 'uwasit', minGPA: 85, branch: 'علمي' },
+    { id: 'eng_uwasit', name: 'الهندسة', uni: 'uwasit', minGPA: 80, branch: 'علمي' },
+    { id: 'sci_uwasit', name: 'العلوم', uni: 'uwasit', minGPA: 70, branch: 'علمي' },
+    { id: 'educ_uwasit', name: 'التربية', uni: 'uwasit', minGPA: 65, branch: 'أدبي' },
+
+    { id: 'med_ukufa', name: 'طب بشري', uni: 'ukufa', minGPA: 92, branch: 'علمي' },
+    { id: 'dent_ukufa', name: 'طب الأسنان', uni: 'ukufa', minGPA: 90, branch: 'علمي' },
+    { id: 'pharm_ukufa', name: 'الصيدلة', uni: 'ukufa', minGPA: 87, branch: 'علمي' },
+    { id: 'eng_ukufa', name: 'الهندسة', uni: 'ukufa', minGPA: 82, branch: 'علمي' },
+    { id: 'law_ukufa', name: 'القانون', uni: 'ukufa', minGPA: 76, branch: 'أدبي' },
+
+    { id: 'med_unajaf', name: 'طب بشري', uni: 'unajaf', minGPA: 91, branch: 'علمي' },
+    { id: 'dent_unajaf', name: 'طب الأسنان', uni: 'unajaf', minGPA: 89, branch: 'علمي' },
+    { id: 'pharm_unajaf', name: 'الصيدلة', uni: 'unajaf', minGPA: 86, branch: 'علمي' },
+    { id: 'eng_unajaf', name: 'الهندسة', uni: 'unajaf', minGPA: 81, branch: 'علمي' },
+
+    { id: 'med_ukarbala', name: 'طب بشري', uni: 'ukarbala', minGPA: 91, branch: 'علمي' },
+    { id: 'dent_ukarbala', name: 'طب الأسنان', uni: 'ukarbala', minGPA: 89, branch: 'علمي' },
+    { id: 'pharm_ukarbala', name: 'الصيدلة', uni: 'ukarbala', minGPA: 86, branch: 'علمي' },
+    { id: 'eng_ukarbala', name: 'الهندسة', uni: 'ukarbala', minGPA: 81, branch: 'علمي' },
+    { id: 'sci_ukarbala', name: 'العلوم', uni: 'ukarbala', minGPA: 71, branch: 'علمي' },
+
+    { id: 'med_ubasrah', name: 'طب بشري', uni: 'ubasrah', minGPA: 93, branch: 'علمي' },
+    { id: 'dent_ubasrah', name: 'طب الأسنان', uni: 'ubasrah', minGPA: 91, branch: 'علمي' },
+    { id: 'pharm_ubasrah', name: 'الصيدلة', uni: 'ubasrah', minGPA: 88, branch: 'علمي' },
+    { id: 'eng_ubasrah', name: 'الهندسة', uni: 'ubasrah', minGPA: 84, branch: 'علمي' },
+    { id: 'sci_ubasrah', name: 'العلوم', uni: 'ubasrah', minGPA: 74, branch: 'علمي' },
+    { id: 'law_ubasrah', name: 'القانون', uni: 'ubasrah', minGPA: 79, branch: 'أدبي' },
+    { id: 'arts_ubasrah', name: 'الآداب', uni: 'ubasrah', minGPA: 69, branch: 'أدبي' },
+
+    { id: 'med_umosul', name: 'طب بشري', uni: 'umosul', minGPA: 92, branch: 'علمي' },
+    { id: 'dent_umosul', name: 'طب الأسنان', uni: 'umosul', minGPA: 90, branch: 'علمي' },
+    { id: 'pharm_umosul', name: 'الصيدلة', uni: 'umosul', minGPA: 87, branch: 'علمي' },
+    { id: 'eng_umosul', name: 'الهندسة', uni: 'umosul', minGPA: 83, branch: 'علمي' },
+    { id: 'sci_umosul', name: 'العلوم', uni: 'umosul', minGPA: 73, branch: 'علمي' },
+    { id: 'educ_umosul', name: 'التربية', uni: 'umosul', minGPA: 66, branch: 'أدبي' },
+
+    { id: 'med_usalah', name: 'طب بشري', uni: 'usalah', minGPA: 90, branch: 'علمي' },
+    { id: 'dent_usalah', name: 'طب الأسنان', uni: 'usalah', minGPA: 88, branch: 'علمي' },
+    { id: 'pharm_usalah', name: 'الصيدلة', uni: 'usalah', minGPA: 85, branch: 'علمي' },
+    { id: 'eng_usalah', name: 'الهندسة', uni: 'usalah', minGPA: 80, branch: 'علمي' },
+
+    { id: 'med_udiyala', name: 'طب بشري', uni: 'udiyala', minGPA: 89, branch: 'علمي' },
+    { id: 'dent_udiyala', name: 'طب الأسنان', uni: 'udiyala', minGPA: 87, branch: 'علمي' },
+    { id: 'pharm_udiyala', name: 'الصيدلة', uni: 'udiyala', minGPA: 84, branch: 'علمي' },
+    { id: 'eng_udiyala', name: 'الهندسة', uni: 'udiyala', minGPA: 79, branch: 'علمي' },
+
+    { id: 'med_uanbar', name: 'طب بشري', uni: 'uanbar', minGPA: 88, branch: 'علمي' },
+    { id: 'dent_uanbar', name: 'طب الأسنان', uni: 'uanbar', minGPA: 86, branch: 'علمي' },
+    { id: 'pharm_uanbar', name: 'الصيدلة', uni: 'uanbar', minGPA: 83, branch: 'علمي' },
+    { id: 'eng_uanbar', name: 'الهندسة', uni: 'uanbar', minGPA: 78, branch: 'علمي' },
+
+    { id: 'med_ubabil', name: 'طب بشري', uni: 'ubabil', minGPA: 89, branch: 'علمي' },
+    { id: 'dent_ubabil', name: 'طب الأسنان', uni: 'ubabil', minGPA: 87, branch: 'علمي' },
+    { id: 'pharm_ubabil', name: 'الصيدلة', uni: 'ubabil', minGPA: 84, branch: 'علمي' },
+    { id: 'eng_ubabil', name: 'الهندسة', uni: 'ubabil', minGPA: 79, branch: 'علمي' },
+
+    { id: 'med_ukirkuk', name: 'طب بشري', uni: 'ukirkuk', minGPA: 88, branch: 'علمي' },
+    { id: 'dent_ukirkuk', name: 'طب الأسنان', uni: 'ukirkuk', minGPA: 86, branch: 'علمي' },
+    { id: 'pharm_ukirkuk', name: 'الصيدلة', uni: 'ukirkuk', minGPA: 83, branch: 'علمي' },
+    { id: 'eng_ukirkuk', name: 'الهندسة', uni: 'ukirkuk', minGPA: 78, branch: 'علمي' },
+
+    { id: 'med_uduhok', name: 'طب بشري', uni: 'uduhok', minGPA: 87, branch: 'علمي' },
+    { id: 'dent_uduhok', name: 'طب الأسنان', uni: 'uduhok', minGPA: 85, branch: 'علمي' },
+    { id: 'pharm_uduhok', name: 'الصيدلة', uni: 'uduhok', minGPA: 82, branch: 'علمي' },
+    { id: 'eng_uduhok', name: 'الهندسة', uni: 'uduhok', minGPA: 77, branch: 'علمي' },
+
+    { id: 'med_usulaymaniya', name: 'طب بشري', uni: 'usulaymaniya', minGPA: 88, branch: 'علمي' },
+    { id: 'dent_usulaymaniya', name: 'طب الأسنان', uni: 'usulaymaniya', minGPA: 86, branch: 'علمي' },
+    { id: 'pharm_usulaymaniya', name: 'الصيدلة', uni: 'usulaymaniya', minGPA: 83, branch: 'علمي' },
+
+    { id: 'med_udhiqar', name: 'طب بشري', uni: 'udhiqar', minGPA: 87, branch: 'علمي' },
+    { id: 'dent_udhiqar', name: 'طب الأسنان', uni: 'udhiqar', minGPA: 85, branch: 'علمي' },
+    { id: 'pharm_udhiqar', name: 'الصيدلة', uni: 'udhiqar', minGPA: 82, branch: 'علمي' },
+    { id: 'eng_udhiqar', name: 'الهندسة', uni: 'udhiqar', minGPA: 77, branch: 'علمي' },
+
+    { id: 'med_uqadisiya', name: 'طب بشري', uni: 'uqadisiya', minGPA: 88, branch: 'علمي' },
+    { id: 'dent_uqadisiya', name: 'طب الأسنان', uni: 'uqadisiya', minGPA: 86, branch: 'علمي' },
+    { id: 'pharm_uqadisiya', name: 'الصيدلة', uni: 'uqadisiya', minGPA: 83, branch: 'علمي' },
+
+    { id: 'med_umaysan', name: 'طب بشري', uni: 'umaysan', minGPA: 87, branch: 'علمي' },
+    { id: 'dent_umaysan', name: 'طب الأسنان', uni: 'umaysan', minGPA: 85, branch: 'علمي' },
+    { id: 'pharm_umaysan', name: 'الصيدلة', uni: 'umaysan', minGPA: 82, branch: 'علمي' },
+
+    { id: 'eng_uanbar_tech', name: 'الهندسة', uni: 'uanbar_tech', minGPA: 75, branch: 'علمي' },
+    { id: 'cs_uanbar_tech', name: 'علوم الحاسبات', uni: 'uanbar_tech', minGPA: 72, branch: 'علمي' },
+    { id: 'eng_usouth_tech', name: 'الهندسة', uni: 'usouth_tech', minGPA: 74, branch: 'علمي' },
+    { id: 'cs_usouth_tech', name: 'علوم الحاسبات', uni: 'usouth_tech', minGPA: 71, branch: 'علمي' },
+    { id: 'eng_unorth_tech', name: 'الهندسة', uni: 'unorth_tech', minGPA: 74, branch: 'علمي' },
+    { id: 'cs_unorth_tech', name: 'علوم الحاسبات', uni: 'unorth_tech', minGPA: 71, branch: 'علمي' },
+    { id: 'eng_ukufa_tech', name: 'الهندسة', uni: 'ukufa_tech', minGPA: 73, branch: 'علمي' },
+    { id: 'cs_ukufa_tech', name: 'علوم الحاسبات', uni: 'ukufa_tech', minGPA: 70, branch: 'علمي' },
+  ];
+
+  // ====== ترتيب تنافسية التخصصات (١ = الأعلى تنافسية) ======
+  const prestigeMap = {
+    'طب بشري': 1, 'طب الأسنان': 2, 'الصيدلة': 3,
+    'الهندسة': 4, 'الهندسة الطبية': 5, 'الذكاء الاصطناعي': 5,
+    'الطب البيطري': 6, 'علوم الحاسبات': 6, 'العلوم التطبيقية': 7,
+    'العلوم': 8, 'الزراعة': 9,
+    'القانون': 1, 'الإدارة والاقتصاد': 2, 'الآداب': 3, 'التربية': 4,
+    'الفنون الجميلة': 1, 'التربية البدنية وعلوم الرياضة': 1,
+  };
+  function prestigeOf(name) { return prestigeMap[name] !== undefined ? prestigeMap[name] : 10; }
+
+  // ====== نصائح إرشادية عامة لكل تخصص (توظيف حكومي/خاص، طبيعة الدراسة) ======
+  const adviceMap = {
+    'طب بشري': 'مشمول رسمياً بنظام التعيين المركزي الصحي (تدرّج الأطباء) بعد التخرج، وفرص القطاع الخاص قوية أيضاً. الدراسة ٦ سنوات ومكثفة.',
+    'طب الأسنان': 'مشمول بنظام التعيين المركزي الصحي، وفرص القطاع الخاص من الأعلى بين التخصصات الطبية. يحتاج دقة يدوية عالية بالتطبيق العملي.',
+    'الصيدلة': 'مشمول جزئياً بالتعيين الصحي، لكن أغلب الخريجين يتجهون للقطاع الخاص (صيدليات، شركات أدوية) الذي يستوعب أعداداً كبيرة سنوياً.',
+    'الهندسة': 'التعيين الحكومي محدود ومتفاوت حسب الفرع الهندسي، لكن القطاع الخاص والمقاولات يستوعب أعداداً جيدة خصوصاً بمشاريع الإعمار.',
+    'الهندسة الطبية': 'ضمن حصة "التخصصات الساندة" الطبية من درجات التعيين الجديدة (نحو ٢٥٪ من درجات معينة)، لكن المنافسة عليها شديدة بنظام نقاط.',
+    'الذكاء الاصطناعي': 'طلب متصاعد من القطاع الخاص وشركات التقنية محلياً وعن بعد، لكن التعيين الحكومي المباشر غير مضمون وتحتاج تبني مهارات عملية بنفسك.',
+    'الطب البيطري': 'تعيين صحي محدود، وفرص القطاع الخاص (عيادات، مزارع) متوفرة لكنها أقل انتشاراً من الطب البشري.',
+    'علوم الحاسبات': 'من أكثر التخصصات طلباً بالقطاع الخاص محلياً وعالمياً (برمجة، أمن سيبراني)، حتى مع محدودية التعيين الحكومي المباشر.',
+    'العلوم التطبيقية': 'فرص متفاوتة حسب التخصص الدقيق داخله؛ يُنصح بالاستفسار عن مسارات التوظيف الفعلية بالقسم قبل التسجيل.',
+    'العلوم': 'خريجو كليات العلوم (أحياء، كيمياء، فيزياء، تحليلات مرضية) مشمولون بحصة من درجات التعيين الصحي الجديدة (نحو ٢٥٪)، لكن المنافسة قوية جداً وتعتمد نظام نقاط.',
+    'الزراعة': 'التعيين الحكومي محدود جداً؛ الفرص الأكبر بالقطاع الخاص الزراعي إذا كان متوفراً بمنطقتك.',
+    'القانون': 'مسار مهم للقضاء أو المحاماة، لكنه يحتاج سنوات تدريب إضافية بعد التخرج (إعداد قضائي أو تمرين نقابة) قبل الاستقرار المهني.',
+    'الإدارة والاقتصاد': 'خريجوه كُثر سنوياً فالتعيين الحكومي محدود نسبياً؛ مهارات إضافية (محاسبة، تحليل بيانات) تفتح فرص قطاع خاص أوسع.',
+    'الآداب': 'فرص التعيين الحكومي محدودة ومتفاوتة حسب القسم الدقيق (لغة، تاريخ، إعلام)، وغالباً تحتاج مهارات إضافية أو دراسات عليا.',
+    'التربية': 'تقليدياً من التخصصات المشمولة بقنوات تعيين تعليمية (خصوصاً بالمواد ذات النقص)، لكن هذا يعتمد قرارات وزارة التربية سنوياً ويختلف بين المحافظات.',
+    'الفنون الجميلة': 'مسار إبداعي أكثر منه وظيفي مباشر؛ الفرص غالباً بالعمل الحر أو القطاع الخاص (تصميم، إعلام).',
+    'التربية البدنية وعلوم الرياضة': 'فرص تعيين تعليمي محدودة وتعتمد احتياج المدارس؛ القطاع الخاص (أندية، تدريب رياضي) بديل بمدن معينة.',
+  };
+  function adviceFor(deptName) {
+    return adviceMap[deptName] || 'لم تتوفر لدينا معلومة مؤكدة عن فرص توظيف هذا القسم تحديداً — راجع مصادر موثوقة أو خريجين سابقين قبل اعتماده.';
+  }
+
+  function chanceOf(diff) {
+    if (diff >= 5) return 'high';
+    if (diff >= 0) return 'medium';
+    return 'low';
+  }
+  function chanceLabel(c) { return c === 'high' ? 'فرصة عالية' : c === 'medium' ? 'فرصة متوسطة' : 'فرصة منخفضة'; }
+  function chanceBadgeClass(c) { return c === 'high' ? 'badge-success' : c === 'medium' ? 'badge-warning' : 'badge-danger'; }
+
+  function tierOf(chance) { return chance === 'high' ? 0 : chance === 'medium' ? 1 : 2; }
+
+  function candidateComparator(a, b) {
+    // الطبقة الأولى: الأقرب للمحافظة المفضلة إن حُدّدت
+    if (a.inProvince !== b.inProvince) return a.inProvince ? -1 : 1;
+    // الطبقة الثانية: فئة الاحتمالية (عالية ثم متوسطة ثم منخفضة) — هذا هو المعيار الأساسي للترتيب
+    const ta = tierOf(a.chance), tb = tierOf(b.chance);
+    if (ta !== tb) return ta - tb;
+    // داخل فئة "منخفضة": الأقرب فعلياً لمتناول معدل الطالب يتقدّم (مهما كان التخصص)
+    if (ta === 2) return b.diff - a.diff;
+    // داخل فئتَي "عالية" و"متوسطة": الطالب مؤهل فعلاً، فيُفضَّل التخصص الأعلى تنافسية أولاً
+    if (a.prestige !== b.prestige) return a.prestige - b.prestige;
+    return b.diff - a.diff;
+  }
+
+  // ====== الحالة ======
+  let state = {
+    name: '', gpa: 0, branch: '', channel: 'عامة', province: '',
+    maxChoices: 10, choices: [], pool: []
+  };
+
+  const progressIds = { 1: 'progressFill1', 2: 'progressFill2', 3: 'progressFill3' };
+
+  // ====== التنقل بين الخطوات ======
+  function goToStep(n) {
+    state.lastStepNum = n;
+    document.querySelectorAll('.step').forEach(el => el.classList.add('hidden'));
+    document.getElementById('step-' + (n === 0 ? 'welcome' : n)).classList.remove('hidden');
+    if (progressIds[n]) {
+      const bar = document.getElementById(progressIds[n]);
+      if (bar) requestAnimationFrame(() => bar.style.width = Math.round(n * 100 / 3) + '%');
+    }
+    if (n === 2) renderSuggestions();
+    if (n === 3) renderSummary();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2500);
+  }
+
+  // ====== الخطوة 1: التحقق وتوليد اقتراح الذكاء الاصطناعي ======
+  function validateStep1() {
+    const name = document.getElementById('studentName').value.trim();
+    const gpa = parseFloat(document.getElementById('studentGPA').value);
+    const branch = document.getElementById('studentBranch').value;
+
+    if (!name) { showToast('الرجاء إدخال الاسم الكامل'); return; }
+    if (isNaN(gpa) || gpa < 0 || gpa > 100) { showToast('الرجاء إدخال معدل صحيح بين 0 و 100'); return; }
+    if (!branch) { showToast('الرجاء اختيار الفرع'); return; }
+
+    state.name = name; state.gpa = gpa; state.branch = branch;
+    state.channel = document.getElementById('studentChannel').value;
+    state.province = document.getElementById('preferredProvince').value;
+    let maxChoices = parseInt(document.getElementById('maxChoicesInput').value, 10);
+    if (isNaN(maxChoices) || maxChoices < 1) maxChoices = 10;
+    if (maxChoices > 50) maxChoices = 50;
+    state.maxChoices = maxChoices;
+
+    generateAiChoices();
+    goToStep(2);
+  }
+
+  // ====== بناء قائمة المرشحين ======
+  function buildCandidates() {
+    let base = departments.filter(d => d.branch === state.branch);
+    return base.map(d => {
+      const uni = universities.find(u => u.id === d.uni);
+      const diff = +(state.gpa - d.minGPA).toFixed(2);
+      return {
+        deptId: d.id, deptName: d.name, uniName: uni.name, city: uni.city,
+        minGPA: d.minGPA, diff, chance: chanceOf(diff), prestige: prestigeOf(d.name),
+        inProvince: state.province ? uni.city === state.province : true,
+      };
+    });
+  }
+
+  // ====== توليد اقتراح الذكاء الاصطناعي ======
+  let lastPickWasWeak = false; // هل حتى أفضل خيار متاح هو فرصة منخفضة؟
+
+  function generateAiChoices() {
+    let candidates = buildCandidates();
+    candidates.sort(candidateComparator); // الأعلى احتمالية أولاً
+
+    if (candidates.length === 0) { state.choices = []; state.pool = []; lastPickWasWeak = false; return; }
+
+    // تنويع: حد أقصى 3 من نفس التخصص لتجنّب احتكار قسم واحد لكل الخيارات
+    const max = state.maxChoices || 10;
+    const cap = 3, nameCount = {}, picked = [], rest = [];
+    candidates.forEach(c => {
+      nameCount[c.deptName] = nameCount[c.deptName] || 0;
+      if (picked.length < max && nameCount[c.deptName] < cap) { picked.push(c); nameCount[c.deptName]++; }
+      else rest.push(c);
+    });
+    while (picked.length < max && rest.length) picked.push(rest.shift());
+
+    state.choices = picked.map(c => ({ ...c, accepted: true }));
+    const chosenIds = new Set(state.choices.map(c => c.deptId));
+    state.pool = candidates.filter(c => !chosenIds.has(c.deptId));
+
+    // إذا كان أفضل خيار متاح (الأعلى احتمالية) لا يزال "فرصة منخفضة"، فهذا يعني
+    // أن معدل الطالب أقل من كل الحدود الدنيا المسجّلة لفرعه في قاعدة البيانات الحالية
+    lastPickWasWeak = state.choices.length > 0 && state.choices[0].chance === 'low';
+  }
+
+  // ====== الخطوة 2: عرض وإدارة الاقتراح ======
+  function renderSuggestions() {
+    const list = document.getElementById('suggList');
+    list.innerHTML = '';
+
+    const warnBox = document.getElementById('lowChanceWarning');
+    if (warnBox) warnBox.remove();
+    if (lastPickWasWeak) {
+      const w = document.createElement('div');
+      w.id = 'lowChanceWarning';
+      w.className = 'warning-box';
+      w.innerHTML = '<strong>تنبيه:</strong> معدلك أقل من كل الحدود الدنيا المسجّلة للأقسام المتاحة ضمن فرعك في قاعدة بياناتنا الحالية (وهي تغطي أبرز الجامعات الحكومية فقط). القائمة أدناه مرتبة من الأقرب احتمالاً فالأبعد، لكن جميعها تبقى فرصتها منخفضة وفق آخر الحدود المسجّلة. راجع خيارات أخرى كالتعليم الأهلي، المعاهد التقنية، أو الأقسام ذات الحدود الأدنى عبر منصة قدم الرسمية.';
+      document.getElementById('suggList').parentNode.insertBefore(w, document.getElementById('suggList'));
+    }
+
+    if (state.choices.length === 0) {
+      list.innerHTML = '<div class="empty-state"><div class="icon">🤖</div><p>لم يجد الذكاء الاصطناعي أقساماً مطابقة لفرعك. جرّب تغيير المحافظة المفضلة أو الفرع من الخطوة السابقة.</p></div>';
+    } else {
+      state.choices.forEach((c, idx) => {
+        const item = document.createElement('div');
+        item.className = 'sugg-item' + (c.accepted ? '' : ' rejected');
+        const diffLabel = (c.diff >= 0 ? '+' : '') + c.diff;
+        const badge = c.accepted
+          ? '<span class="badge ' + chanceBadgeClass(c.chance) + '">' + chanceLabel(c.chance) + '</span>'
+          : '<span class="badge badge-muted">مرفوض من الطالب</span>';
+        let locNote = '';
+        if (state.province) {
+          locNote = c.city === state.province
+            ? ' هذه الجامعة ضمن محافظتك المفضلة.'
+            : ' تنبيه: خارج محافظتك المفضلة (' + state.province + ')، ستحتاج تنقلاً أو سكناً بمدينة ' + c.city + '.';
+        }
+        const adviceHtml = c.showAdvice
+          ? '<div class="advice-line">💡 ' + adviceFor(c.deptName) + locNote + '</div>'
+          : '';
+        item.innerHTML =
+          '<div class="choice-rank">' + (idx + 1) + '</div>' +
+          '<div class="choice-details">' +
+            '<div class="name">' + c.deptName + ' — ' + c.uniName + '</div>' +
+            '<div class="meta">' + c.city + ' | الحد الأدنى: ' + c.minGPA + ' | فرق المعدل: ' + diffLabel + ' | ' + badge + '</div>' +
+          '</div>' +
+          '<div class="sugg-controls">' +
+            '<label class="switch" title="قبول الخيار"><input type="checkbox" ' + (c.accepted ? 'checked' : '') + ' onchange="toggleAccept(' + idx + ')"><span class="slider"></span></label>' +
+            '<button onclick="moveChoice(' + idx + ', -1)" ' + (idx === 0 ? 'disabled' : '') + ' aria-label="نقل لأعلى">↑</button>' +
+            '<button onclick="moveChoice(' + idx + ', 1)" ' + (idx === state.choices.length - 1 ? 'disabled' : '') + ' aria-label="نقل لأسفل">↓</button>' +
+            '<button onclick="swapChoice(' + idx + ')" title="اقترح بديلاً" aria-label="استبدال">⇄</button>' +
+            '<button onclick="toggleAdvice(' + idx + ')" title="نصيحة" aria-label="نصيحة">💡</button>' +
+            '<button onclick="deleteChoice(' + idx + ')" style="color:#9C3B31;" aria-label="حذف">×</button>' +
+          '</div>' +
+          adviceHtml;
+        list.appendChild(item);
+      });
+    }
+
+    const acceptedCount = state.choices.filter(c => c.accepted).length;
+    const sortText = document.getElementById('aiSortText');
+    if (state.choices.length > 0) {
+      sortText.textContent = 'رتّب الذكاء الاصطناعي ' + state.choices.length + ' خياراً (من أصل حد أقصى ' + state.maxChoices + ') حسب احتمالية القبول أولاً بناءً على معدلك (' + state.gpa + ') وفرعك (' + state.branch + '): الأقسام التي معدلك فيها ضمن الحد الآمن تتصدّر، ثم التي ضمن حد متوسط، وأخيراً الأبعد احتمالاً. داخل الفئة الآمنة أو المتوسطة يُفضَّل التخصص الأعلى تنافسية أولاً (كالطب) طالما معدلك يبلغه فعلاً، أما ضمن الفئة الضعيفة فتتصدّر الأقسام الأقرب لمعدلك بغض النظر عن التخصص (' + acceptedCount + ' خياراً مقبولاً حالياً). فعّل المفتاح لقبول الخيار أو ألغِه لرفضه، ورتّب بالأسهم، أو استخدم ⇄ لاقتراح بديل.';
+    }
+    renderManualAdd();
+  }
+
+  function toggleAccept(idx) { state.choices[idx].accepted = !state.choices[idx].accepted; renderSuggestions(); }
+
+  function toggleAdvice(idx) { state.choices[idx].showAdvice = !state.choices[idx].showAdvice; renderSuggestions(); }
+
+  function moveChoice(idx, dir) {
+    const newIdx = idx + dir;
+    if (newIdx < 0 || newIdx >= state.choices.length) return;
+    [state.choices[idx], state.choices[newIdx]] = [state.choices[newIdx], state.choices[idx]];
+    renderSuggestions();
+  }
+
+  function swapChoice(idx) {
+    if (state.pool.length === 0) { showToast('لا توجد بدائل إضافية متاحة لهذا الفرع'); return; }
+    const old = state.choices[idx];
+    const next = state.pool.shift();
+    state.choices[idx] = { ...next, accepted: true };
+    state.pool.push(old);
+    showToast('تم اقتراح بديل');
+    renderSuggestions();
+  }
+
+  function deleteChoice(idx) {
+    const removed = state.choices.splice(idx, 1)[0];
+    if (removed) state.pool.unshift({ ...removed, accepted: undefined });
+    renderSuggestions();
+  }
+
+  function manualAdd() {
+    const sel = document.getElementById('manualAddSelect');
+    const deptId = sel.value;
+    if (!deptId) return;
+    if (state.choices.length >= state.maxChoices) { showToast('الحد الأقصى ' + state.maxChoices + ' خياراً'); return; }
+    const idx = state.pool.findIndex(c => c.deptId === deptId);
+    if (idx === -1) return;
+    const [item] = state.pool.splice(idx, 1);
+    state.choices.push({ ...item, accepted: true });
+    renderSuggestions();
+  }
+
+  function renderManualAdd() {
+    const sel = document.getElementById('manualAddSelect');
+    const btn = document.getElementById('manualAddBtn');
+    if (!sel) return;
+    sel.innerHTML = '<option value="">اختر قسماً لإضافته...</option>';
+    state.pool.slice().sort((a, b) => a.deptName.localeCompare(b.deptName, 'ar'))
+      .forEach(c => {
+        const opt = document.createElement('option');
+        opt.value = c.deptId;
+        opt.textContent = c.deptName + ' — ' + c.uniName + ' (' + c.city + ') | الحد الأدنى: ' + c.minGPA;
+        sel.appendChild(opt);
+      });
+    if (btn) btn.disabled = state.choices.length >= state.maxChoices || state.pool.length === 0;
+    sel.disabled = state.pool.length === 0;
+  }
+
+  // ====== الخطوة 3: المراجعة ======
+  function renderSummary() {
+    const accepted = state.choices.filter(c => c.accepted);
+    const highCount = accepted.filter(c => c.chance === 'high').length;
+    const medCount = accepted.filter(c => c.chance === 'medium').length;
+    const lowCount = accepted.filter(c => c.chance === 'low').length;
+    const summary = document.getElementById('summaryBox');
+    summary.innerHTML =
+      '<svg class="summary-seal" viewBox="0 0 100 100"><circle cx="50" cy="50" r="46" fill="none" stroke="#142A45" stroke-width="2"/><circle cx="50" cy="50" r="38" fill="none" stroke="#142A45" stroke-width="1" stroke-dasharray="2 3"/></svg>' +
+      '<div class="summary-row"><span class="label">الاسم</span><span class="value">' + state.name + '</span></div>' +
+      '<div class="summary-row"><span class="label">المعدل</span><span class="value">' + state.gpa + '</span></div>' +
+      '<div class="summary-row"><span class="label">الفرع</span><span class="value">' + state.branch + '</span></div>' +
+      '<div class="summary-row"><span class="label">القناة</span><span class="value">' + state.channel + '</span></div>' +
+      '<div class="summary-row"><span class="label">عدد الخيارات المقبولة</span><span class="value">' + accepted.length + ' / ' + state.maxChoices + '</span></div>' +
+      '<div class="summary-row"><span class="label">اقترحها الذكاء الاصطناعي</span><span class="value">' + state.choices.length + '</span></div>' +
+      '<div class="summary-row"><span class="label">فرص عالية</span><span class="value" style="color:#1E6E56">' + highCount + '</span></div>' +
+      '<div class="summary-row"><span class="label">فرص متوسطة</span><span class="value" style="color:#9C6B1F">' + medCount + '</span></div>' +
+      '<div class="summary-row"><span class="label">فرص منخفضة</span><span class="value" style="color:#9C3B31">' + lowCount + '</span></div>';
+
+    const finalList = document.getElementById('finalChoiceList');
+    finalList.innerHTML = '';
+    if (accepted.length === 0) {
+      finalList.innerHTML = '<div class="empty-state"><div class="icon">📋</div><p>لم يبقَ أي خيار مقبول. ارجع للخطوة السابقة وفعّل خياراً واحداً على الأقل.</p></div>';
+      return;
+    }
+    accepted.forEach((c, i) => {
+      const item = document.createElement('div');
+      item.className = 'choice-item';
+      let locNote = '';
+      if (state.province) {
+        locNote = c.city === state.province
+          ? ' ضمن محافظتك المفضلة.'
+          : ' خارج محافظتك المفضلة (' + state.province + ').';
+      }
+      item.innerHTML =
+        '<div class="choice-rank">' + (i + 1) + '</div>' +
+        '<div class="choice-details">' +
+          '<div class="name">' + c.deptName + ' — ' + c.uniName + '</div>' +
+          '<div class="meta">' + c.city + ' | الحد الأدنى: ' + c.minGPA + ' | فرصة: <span class="badge ' + chanceBadgeClass(c.chance) + '">' + chanceLabel(c.chance) + '</span></div>' +
+          '<div class="advice-line">💡 ' + adviceFor(c.deptName) + locNote + '</div>' +
+        '</div>';
+      finalList.appendChild(item);
+    });
+  }
+
+  // ====== التصدير ======
+  function exportToPDF() {
+    const accepted = state.choices.filter(c => c.accepted);
+    let text = '=======================================\n';
+    text += '    استمارة القبول المركزي - العراق\n';
+    text += '=======================================\n\n';
+    text += 'بيانات الطالب:\n';
+    text += '---------------------------------------\n';
+    text += 'الاسم: ' + state.name + '\n';
+    text += 'المعدل: ' + state.gpa + '\n';
+    text += 'الفرع: ' + state.branch + '\n';
+    text += 'القناة: ' + state.channel + '\n\n';
+    text += 'خيارات القبول (رتّبها الذكاء الاصطناعي، حد أقصى ' + state.maxChoices + '، وأقرّها الطالب):\n';
+    text += '---------------------------------------\n';
+    accepted.forEach((c, i) => {
+      text += (i + 1) + '. ' + c.deptName + ' - ' + c.uniName + ' (' + c.city + ')\n';
+      text += '   الحد الأدنى: ' + c.minGPA + ' | فرصة القبول: ' + chanceLabel(c.chance) + '\n\n';
+    });
+    text += '=======================================\n';
+    text += 'تم إنشاء هذا التقرير بواسطة مساعد القبول الجامعي العراقي\n';
+    text += 'تنبيه: يجب التأكد من البيانات عبر منصة قدم الرسمية قبل التقديم النهائي.';
+    const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'استمارة_القبول_' + state.name.replace(/\s+/g, '_') + '.txt';
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast('تم تصدير الملف بنجاح');
+  }
+
+  function exportToText() {
+    const accepted = state.choices.filter(c => c.accepted);
+    let text = 'استمارة القبول المركزي\n';
+    text += 'الطالب: ' + state.name + '\n';
+    text += 'المعدل: ' + state.gpa + ' | الفرع: ' + state.branch + '\n\n';
+    text += 'الخيارات:\n';
+    accepted.forEach((c, i) => { text += (i + 1) + '. ' + c.deptName + ' - ' + c.uniName + ' (' + c.city + ')\n'; });
+    navigator.clipboard.writeText(text).then(() => showToast('تم نسخ الاستمارة إلى الحافظة'));
+  }
+
+  function shareViaWhatsapp() {
+    const accepted = state.choices.filter(c => c.accepted);
+    if (accepted.length === 0) { showToast('لا توجد خيارات لمشاركتها'); return; }
+    let text = 'قائمة اختياراتي بالقبول المركزي (رتّبها الذكاء الاصطناعي، وأنا أقرّرت):\n\n';
+    accepted.forEach((c, i) => { text += (i + 1) + '. ' + c.deptName + ' - ' + c.uniName + ' (' + c.city + ')\n'; });
+    text += '\nشو رأيك فيها؟ 🤔';
+    window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank');
+  }
+
+  // ====== Firebase: لوحة الطلاب العامة ======
+  const firebaseConfig = {
+    apiKey: "AIzaSyDxw5z4GmqMAI41EYgLZidrhd-oJP1mLPo",
+    authDomain: "qabool-app-a1024.firebaseapp.com",
+    projectId: "qabool-app-a1024",
+    storageBucket: "qabool-app-a1024.firebasestorage.app",
+    messagingSenderId: "985361284907",
+    appId: "1:985361284907:web:ce990996706baef9804f6e"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+  const auth = firebase.auth();
+  const ADMIN_EMAIL = 'alianee1999@gmail.com';
+
+  let isAdmin = false;
+  let boardCache = null;
+  let boardUnsub = null;
+
+  function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str == null ? '' : str;
+    return div.innerHTML;
+  }
+
+  function showBoard() {
+    if (state.lastStepNum === undefined) state.lastStepNum = 0;
+    document.querySelectorAll('.step').forEach(el => el.classList.add('hidden'));
+    document.getElementById('step-board').classList.remove('hidden');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (!boardUnsub) {
+      boardUnsub = db.collection('publishedLists').orderBy('createdAt', 'desc').limit(50)
+        .onSnapshot(
+          snap => { boardCache = snap; renderBoard(snap); },
+          err => { console.error(err); showToast('تعذر تحميل اللوحة'); }
+        );
+    }
+    updateAdminUI(auth.currentUser);
+  }
+
+  function closeBoard() {
+    document.getElementById('step-board').classList.add('hidden');
+    goToStep(state.lastStepNum || 0);
+  }
+
+  function renderBoard(snapshot) {
+    const list = document.getElementById('boardList');
+    if (!list) return;
+    list.innerHTML = '';
+    if (snapshot.empty) {
+      list.innerHTML = '<div class="empty-state"><div class="icon">🌐</div><p>لا توجد قوائم منشورة بعد. كن أول من ينشر!</p></div>';
+      return;
+    }
+    snapshot.forEach(doc => {
+      const data = doc.data();
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.style.marginBottom = '14px';
+      const name = data.displayName && String(data.displayName).trim() ? String(data.displayName).trim() : 'طالب مجهول';
+      let itemsHtml = '';
+      (data.choices || []).forEach((c, i) => {
+        itemsHtml += '<div class="summary-row"><span class="label">' + (i + 1) + '. ' + escapeHtml(c.deptName) + '</span><span class="value" style="font-size:13px;">' + escapeHtml(c.uniName) + ' (' + escapeHtml(c.city) + ')</span></div>';
+      });
+      const delBtn = isAdmin
+        ? '<button class="btn btn-outline btn-sm" style="color:#9C3B31; margin-top:10px;" onclick="deleteListing(\'' + doc.id + '\')">حذف هذه القائمة</button>'
+        : '';
+      const commentsBox =
+        '<div style="margin-top:12px;border-top:1px dashed var(--line);padding-top:10px;">' +
+          '<button class="btn btn-outline btn-sm" onclick="toggleComments(\'' + doc.id + '\')">💬 التعليقات</button>' +
+          '<div id="comments-' + doc.id + '" class="hidden" style="margin-top:10px;">' +
+            '<div class="comments-items"></div>' +
+            '<div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;">' +
+              '<input type="text" id="cname-' + doc.id + '" class="form-input" placeholder="اسمك (اختياري)" style="flex:1;min-width:100px;padding:8px;font-size:12.5px;">' +
+              '<input type="text" id="ctext-' + doc.id + '" class="form-input" placeholder="اكتب تعليقاً عاماً..." maxlength="300" style="flex:2;min-width:140px;padding:8px;font-size:12.5px;">' +
+              '<button class="btn btn-primary btn-sm" onclick="submitComment(\'' + doc.id + '\')">إرسال</button>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
+      card.innerHTML = '<div class="card-title" style="font-size:16px;">👤 ' + escapeHtml(name) + '</div>' + itemsHtml + delBtn + commentsBox;
+      list.appendChild(card);
+    });
+  }
+
+  function toggleComments(listId) {
+    const wrap = document.getElementById('comments-' + listId);
+    if (!wrap) return;
+    const isHidden = wrap.classList.contains('hidden');
+    if (isHidden) {
+      wrap.classList.remove('hidden');
+      if (!wrap.dataset.loaded) {
+        wrap.dataset.loaded = '1';
+        db.collection('publishedLists').doc(listId).collection('comments')
+          .orderBy('createdAt', 'asc').limit(200)
+          .onSnapshot(
+            snap => renderComments(listId, snap),
+            err => console.error(err)
+          );
+      }
+    } else {
+      wrap.classList.add('hidden');
+    }
+  }
+
+  function renderComments(listId, snapshot) {
+    const box = document.getElementById('comments-' + listId);
+    if (!box) return;
+    const itemsDiv = box.querySelector('.comments-items');
+    if (!itemsDiv) return;
+    itemsDiv.innerHTML = '';
+    if (snapshot.empty) {
+      itemsDiv.innerHTML = '<div style="font-size:12px;color:var(--ink-soft);padding:6px 0;">لا توجد تعليقات بعد.</div>';
+      return;
+    }
+    snapshot.forEach(doc => {
+      const d = doc.data();
+      const name = d.name && String(d.name).trim() ? String(d.name).trim() : 'مجهول';
+      const delBtn = isAdmin
+        ? ' <button onclick="deleteComment(\'' + listId + '\',\'' + doc.id + '\')" style="color:#9C3B31;background:none;border:none;font-size:11px;cursor:pointer;text-decoration:underline;">حذف</button>'
+        : '';
+      const row = document.createElement('div');
+      row.style.cssText = 'padding:7px 0;border-bottom:1px dashed var(--line);font-size:12.5px;line-height:1.6;';
+      row.innerHTML = '<strong>' + escapeHtml(name) + ':</strong> ' + escapeHtml(d.text) + delBtn;
+      itemsDiv.appendChild(row);
+    });
+  }
+
+  function submitComment(listId) {
+    const nameInput = document.getElementById('cname-' + listId);
+    const textInput = document.getElementById('ctext-' + listId);
+    const text = (textInput.value || '').trim();
+    if (!text) { showToast('اكتب تعليقاً أولاً'); return; }
+    if (text.length > 300) { showToast('التعليق طويل جداً (٣٠٠ حرف كحد أقصى)'); return; }
+    const name = (nameInput.value || '').trim().slice(0, 40);
+    db.collection('publishedLists').doc(listId).collection('comments').add({
+      name: name, text: text, createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    }).then(() => { textInput.value = ''; }).catch(err => { console.error(err); showToast('تعذر إرسال التعليق'); });
+  }
+
+  function deleteComment(listId, commentId) {
+    if (!isAdmin) return;
+    if (!confirm('حذف هذا التعليق؟')) return;
+    db.collection('publishedLists').doc(listId).collection('comments').doc(commentId).delete()
+      .then(() => showToast('تم الحذف'))
+      .catch(err => { console.error(err); showToast('تعذر الحذف'); });
+  }
+
+  function publishToBoard() {
+    const accepted = state.choices.filter(c => c.accepted);
+    if (accepted.length === 0) { showToast('لا توجد خيارات للنشر'); return; }
+    let nickname = prompt('اكتب اسماً مستعاراً (اختياري، اتركه فاضياً لتبقى مجهولاً):', '');
+    if (nickname === null) return;
+    nickname = (nickname || '').trim().slice(0, 40);
+    const payload = {
+      displayName: nickname,
+      choices: accepted.map(c => ({ deptName: c.deptName, uniName: c.uniName, city: c.city })),
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    };
+    db.collection('publishedLists').add(payload)
+      .then(() => showToast('تم النشر باللوحة'))
+      .catch(err => { console.error(err); showToast('تعذر النشر، حاول مرة أخرى'); });
+  }
+
+  function deleteListing(id) {
+    if (!isAdmin) return;
+    if (!confirm('حذف هذه القائمة نهائياً؟')) return;
+    db.collection('publishedLists').doc(id).delete()
+      .then(() => showToast('تم الحذف'))
+      .catch(err => { console.error(err); showToast('تعذر الحذف'); });
+  }
+
+  function adminLogin() {
+    const provider = new firebase.auth.GoogleAuthProvider();
+    auth.signInWithRedirect(provider).catch(err => {
+      console.error(err);
+      showToast('فشل بدء تسجيل الدخول');
+    });
+  }
+
+  function normalizeEmail(e) { return (e || '').trim().toLowerCase(); }
+
+  auth.getRedirectResult().then(result => {
+    if (result && result.user) {
+      const signedInEmail = result.user.email || '(بدون بريد)';
+      if (normalizeEmail(signedInEmail) !== normalizeEmail(ADMIN_EMAIL)) {
+        auth.signOut();
+        showToast('البريد "' + signedInEmail + '" ليس حساب المدير');
+      } else {
+        showToast('تم تسجيل الدخول كمدير (' + signedInEmail + ')');
+      }
+    }
+  }).catch(err => {
+    console.error(err);
+    if (err && err.code) showToast('خطأ دخول: ' + err.code);
+  });
+
+  function adminLogout() { auth.signOut(); }
+
+  function updateAdminUI(user) {
+    const box = document.getElementById('adminBox');
+    if (!box) return;
+    if (isAdmin) {
+      box.innerHTML = '<span style="font-size:12.5px;color:var(--green);font-weight:600;">✓ مسجّل كمدير</span><button class="btn btn-outline btn-sm" onclick="adminLogout()">تسجيل خروج</button>';
+    } else {
+      box.innerHTML = '<button class="btn btn-outline btn-sm" onclick="adminLogin()">دخول المدير</button>';
+    }
+  }
+
+  auth.onAuthStateChanged(user => {
+    isAdmin = !!(user && normalizeEmail(user.email) === normalizeEmail(ADMIN_EMAIL));
+    updateAdminUI(user);
+    if (boardCache) renderBoard(boardCache);
+  });
+
+  function resetApp() {
+    state = { name: '', gpa: 0, branch: '', channel: 'عامة', province: '', maxChoices: 10, choices: [], pool: [] };
+    document.getElementById('studentName').value = '';
+    document.getElementById('studentGPA').value = '';
+    document.getElementById('studentBranch').value = '';
+    document.getElementById('studentChannel').value = 'عامة';
+    document.getElementById('preferredProvince').value = '';
+    document.getElementById('maxChoicesInput').value = 10;
+    goToStep(0);
+  }
+</script>
+
+</body>
+</html>
