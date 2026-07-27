@@ -1,4 +1,4 @@
-const CACHE_NAME = 'qabool-app-v2';
+const CACHE_NAME = 'qabool-app-v3';
 const CORE_ASSETS = ['./', './index.html', './manifest.json', './icon-192.png', './icon-512.png'];
 
 self.addEventListener('install', event => {
@@ -18,11 +18,14 @@ self.addEventListener('activate', event => {
 });
 
 self.addEventListener('fetch', event => {
-  // لا نتدخل في طلبات Firebase (يجب أن تبقى حية دائماً)
   if (event.request.url.includes('firestore') || event.request.url.includes('googleapis') || event.request.url.includes('firebaseapp')) {
     return;
   }
   event.respondWith(
-    caches.match(event.request).then(cached => cached || fetch(event.request))
+    fetch(event.request).then(response => {
+      const copy = response.clone();
+      caches.open(CACHE_NAME).then(cache => cache.put(event.request, copy)).catch(() => {});
+      return response;
+    }).catch(() => caches.match(event.request))
   );
 });
